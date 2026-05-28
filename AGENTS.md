@@ -11,7 +11,8 @@ The skill output is delivered in conversation, not as files. The only artifacts 
 ## Repository Map
 
 - `SKILL.md` — skill entrypoint: triggering, language choice, the six-layer spine, output rules, anti-patterns.
-- `README.md` — user-facing project intro and install instructions.
+- `README.md` / `README.zh-CN.md` — user-facing project intro and install instructions (bilingual, full parity).
+- `CONTRIBUTING.md` / `CONTRIBUTING.zh-CN.md` — contribution flow and bilingual policy (bilingual, full parity).
 - `CLAUDE.md` — Claude-specific entry pointing here, with the project-specific hard rules.
 - `LICENSE` — MIT.
 - `references/teaching-method.md` — per-layer playbook with good/bad examples. The craft of each layer lives here.
@@ -19,7 +20,7 @@ The skill output is delivered in conversation, not as files. The only artifacts 
 - `references/concept-to-language.md` — concept area → recommended code language and Mode A/B form.
 - `references/enrichments.md` — the eight optional enrichments (E1–E8) and the decision checklist for when each fires.
 - `evals/evals.json` — test prompts with expected-output descriptions (closure, CAP, GIL, monad, GRPO, MoE).
-- `assets/examples/` — worked example outputs frozen from running the skill (regression baselines and live demos).
+- `assets/examples/` — worked example outputs frozen from running the skill. Examples are bilingual: each concept has `<name>-en.md` and `<name>-zh.md` plus a shared language-agnostic `<name>-pseudocode.py` sidecar. New examples should ship in both languages; one-language contributions are accepted and a maintainer translates the other side.
 - `scripts/package-skill.sh` — builds the release archive.
 - `.claude-plugin/marketplace.json` — Claude Code plugin marketplace metadata.
 - `dist/agent-teacher.zip` — tracked release archive.
@@ -31,6 +32,10 @@ bash scripts/package-skill.sh                # build dist/agent-teacher.zip
 ```
 
 The project has no build/render pipeline — output is markdown delivered in chat. There is intentionally no test runner; verification is done by running the skill on an eval prompt and inspecting the lesson.
+
+## Bilingual policy
+
+Canonical project docs (`SKILL.md`, `AGENTS.md`, `CLAUDE.md`, `references/`) are **English-only** — they are the LLM's authoritative reading material and a single source of truth, translating them would create sync drift on every change. Human-facing entry points (`README`, `CONTRIBUTING`) are **fully bilingual** (English + zh-CN with `.zh-CN.md` suffix), and worked examples in `assets/examples/` are bilingual side-by-side (`<name>-en.md` + `<name>-zh.md`). This split keeps monolingual contributors fully onboardable without doubling the maintenance surface on the canonical spec. See `CONTRIBUTING.md` for the contributor-facing version of this policy.
 
 ## Working Rules
 

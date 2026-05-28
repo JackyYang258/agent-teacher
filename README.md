@@ -1,6 +1,7 @@
 <div align="center">
   <h1>AgentTeacher</h1>
   <p><b>Good concepts deserve good code.</b></p>
+  <p><a href="README.md"><b>English</b></a> · <a href="README.zh-CN.md">中文</a></p>
   <a href="https://github.com/JackyYang258/AgentTeacher/stargazers"><img src="https://img.shields.io/github/stars/JackyYang258/AgentTeacher?style=flat-square" alt="Stars"></a>
   <a href="https://github.com/JackyYang258/AgentTeacher/releases"><img src="https://img.shields.io/github/v/tag/JackyYang258/AgentTeacher?label=version&style=flat-square" alt="Version"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="License"></a>
@@ -21,19 +22,21 @@ The actual frozen output from running the skill on two AI/ML concepts:
 <table>
 <tr>
   <td align="center" width="50%">
-    <a href="assets/examples/grpo.md"><b>GRPO</b></a>
-    <br><sub>Group-Relative Policy Optimization · 中文</sub>
+    <a href="assets/examples/grpo-en.md"><b>GRPO</b></a>
+    <br><sub>Group-Relative Policy Optimization</sub>
     <br><sub>"PPO without the critic" — group-relative advantage, shape-traced training step, k3 KL estimator</sub>
+    <br><sub><a href="assets/examples/grpo-en.md">English</a> · <a href="assets/examples/grpo-zh.md">中文</a></sub>
   </td>
   <td align="center" width="50%">
-    <a href="assets/examples/moe.md"><b>Mixture of Experts</b></a>
-    <br><sub>Sparse architecture · 中文</sub>
+    <a href="assets/examples/moe-en.md"><b>Mixture of Experts</b></a>
+    <br><sub>Sparse architecture</sub>
     <br><sub>Gate → top-K → dispatch → combine, with every shape transition <code>[B,T,D] → [B,T,E] → [N,D]</code> annotated</sub>
+    <br><sub><a href="assets/examples/moe-en.md">English</a> · <a href="assets/examples/moe-zh.md">中文</a></sub>
   </td>
 </tr>
 </table>
 
-Each lesson includes a sidecar pseudocode file (`assets/examples/<concept>-pseudocode.py`) so you can open the code in an editor with syntax highlighting while reading the prose.
+Each lesson includes a sidecar pseudocode file ([`grpo-pseudocode.py`](assets/examples/grpo-pseudocode.py), [`moe-pseudocode.py`](assets/examples/moe-pseudocode.py)) so you can open the code in an editor with syntax highlighting while reading the prose.
 
 ## Usage
 

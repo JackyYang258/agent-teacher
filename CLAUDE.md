@@ -2,29 +2,31 @@
 
 Concept-teaching skill: explains a technical concept through a fixed six-part structure — intuition → example (runnable or pseudocode) → walkthrough → trap → pointers → test questions.
 
-## 启动前
+## Before you start
 
-- 个人/全局规则可放在仓库外；本文件只记录 AgentTeacher 项目内的 Claude Code 入口和维护规则。
-- 仓库地图、Working Rules、Current Risk Areas、Verification、Release Flow 全在 `AGENTS.md`。
-- skill 主入口看 `SKILL.md`；教学法看 `references/teaching-method.md`；教学代码风格看 `references/cod·-style-for-teaching.md`；概念→语言映射看 `references/concept-to-language.md`。
+- Personal / global agent rules belong outside this repo. This file records only AgentTeacher's Claude Code entry and maintenance rules.
+- The full repository map, working rules, current risk areas, verification, and release flow live in `AGENTS.md`.
+- The skill itself starts at `SKILL.md`. Teaching method: `references/teaching-method.md`. Code style for teaching: `references/code-style-for-teaching.md`. Concept→language mapping: `references/concept-to-language.md`. Enrichments (E1–E8): `references/enrichments.md`.
+- For contributors (English / 中文 onboarding): see `CONTRIBUTING.md` / `CONTRIBUTING.zh-CN.md`.
 
-## 常用命令
+## Common commands
 
 ```bash
-bash scripts/package-skill.sh                  # 打包 dist/agent-teacher.zip
+bash scripts/package-skill.sh                  # build dist/agent-teacher.zip
 ```
 
-项目没有构建/渲染流水线 —— 输出是对话里的 markdown。没有专门的 test runner；验证靠在真实 prompt 上跑一遍 skill 并检查产出。
+The project has no build / render pipeline — output is markdown delivered in chat. There is no test runner; verification is done by running the skill on a real prompt and inspecting the lesson.
 
-## 项目独有硬规则
+## Project-specific hard rules
 
-- 六层骨架 L1–L6（intuition → example → walkthrough → trap → pointers → test questions）是契约。不要加 L7，不要删层。某一层在特定概念上感觉冗余时，写一行带过，不要省略。
-- Mode A (runnable) / Mode B (pseudocode) 二选一。Mode B 自动写 sidecar 文件到 `/tmp/<slug>-pseudocode.<ext>`；Mode A 只在用户明确要求时写文件。
-- 伪代码必须是真 Python/PyTorch 语法 + 每个形状变化的 shape 注释。**禁止**自然语言伪代码（`FOR each token DO ...`）。
-- L6 是"测试题"，不是"理解检查"。给 hint 不给答案，题目本身要有具体性（"如果 reward 全相等会发生什么"而不是"你理解了吗"）。**不要 frame 成面试场景**，不要写"interview"字样。
-- **Enrichments E1–E8** 是按概念性质有条件触发的，**不是默认全开**。决策表在 `references/enrichments.md`。硬上限 5 个/lesson，硬下限 0 个（大多数概念跑 plain 六层就够）。enrichment 框架以 DL 为主调，但 E2/E3/E4/E5/E7/E8 也适用于数据结构、分布式协议、复杂算法。**语言特性**（闭包、generator、channel）一律不上 enrichment。
-- Mode B 有三种 flavor：DL（shape 注释）、协议（参与方状态 + 消息箭头）、算法/数据结构（invariant + concrete trace）。E2（state tracking）在三种 flavor 里是同一原则、不同载体。
-- 改 `SKILL.md` 时同步更新 `references/teaching-method.md` 的对应 playbook —— SKILL.md 是契约，references 是带例子的展开，两者必须一致。
-- 不打包 `evals/` / `.claude-plugin/` / `dist/` 到 release zip。Exclude 列表在 `scripts/package-skill.sh`。
-- 改 `scripts/package-skill.sh` 或新增任何要进 zip 的文件后，刷新并检查 `dist/agent-teacher.zip`，确认新文件确实被 `git add` 过（包脚本基于 `git ls-files`，未追踪的文件会静默消失）。
-- 不提交一次性 review 报告或诊断快照；稳定规则沉淀到 `AGENTS.md`、`CLAUDE.md`、`SKILL.md` 或 `references/`，其余丢弃。
+- The six-layer spine L1–L6 (intuition → example → walkthrough → trap → pointers → test questions) is the contract. Don't add L7, don't drop layers. If a layer feels redundant for a specific concept, write a one-liner — don't skip.
+- Mode A (runnable) vs Mode B (pseudocode) is binary. Mode B auto-writes a sidecar file at `/tmp/<slug>-pseudocode.<ext>`; Mode A writes a file only when the user asks.
+- Pseudocode must be real Python / PyTorch syntax with state annotations on every line where state changes. Natural-language pseudocode (`FOR each token DO ...`) is forbidden — it throws away the precision code form gives.
+- L6 is "test questions," not a comprehension check. Hints, no answers. Phrase each question concretely ("if all rewards in a group were identical, what happens to the gradient?" — not "do you understand?"). Don't frame as interview questions; don't use the word "interview" in skill output.
+- Enrichments E1–E8 are concept-driven, not concept-default. Decision table is in `references/enrichments.md`. Hard cap 5 per lesson, hard floor 0 (plain six-layer lesson is the right answer for most concepts). The framework was tuned for DL/ML but E2/E3/E4/E5/E7/E8 also apply to data structures, distributed protocols, and complex algorithms. **Language features** (closures, generators, channels) never get enrichments.
+- Mode B has three flavors: DL (tensor shape annotations), protocols (participant state + message arrows), algorithms / data structures (invariants + concrete trace). E2 (state tracking) means the right thing in each flavor — don't apply DL shape-annotation conventions to a protocol pseudocode block.
+- When changing `SKILL.md`, sync the matching playbook in `references/teaching-method.md`. SKILL.md is the contract; references are the expanded playbook with examples. They must agree.
+- Project canonical docs are English-only (`SKILL.md`, `AGENTS.md`, `CLAUDE.md`, `references/`). Bilingual surfaces are `README` and `CONTRIBUTING` (both in English and Chinese versions) and `assets/examples/` (each example exists as `-en.md` and `-zh.md`). See `CONTRIBUTING.md` for the full bilingual policy.
+- Don't bundle `evals/` / `.claude-plugin/` / `dist/` into the release zip. The exclude list lives in `scripts/package-skill.sh`.
+- After editing `scripts/package-skill.sh` or adding any file that should ship in the zip, refresh and inspect `dist/agent-teacher.zip`, confirming new files were `git add`-ed (the package script is based on `git ls-files`; untracked files vanish silently).
+- Don't commit one-off review reports or diagnostic snapshots. Stable rules go into `AGENTS.md`, `CLAUDE.md`, `SKILL.md`, or `references/`; everything else is discarded.

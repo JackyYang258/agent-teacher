@@ -1,0 +1,14 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Logs
+*.log
+
+# Allow dist/ but only track the release zip itself
+/dist/*
+!/dist/agent-teacher.zip

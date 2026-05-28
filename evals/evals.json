@@ -1,0 +1,47 @@
+{
+  "skill_name": "teacher",
+  "evals": [
+    {
+      "id": 1,
+      "name": "closure-cn",
+      "prompt": "解释一下 Python 的闭包，我每次看完就忘",
+      "expected_output": "Five-layer lesson in Chinese with a runnable Python closure example (make_counter style), a walkthrough, the late-binding-in-a-loop trap as L4, and 2-3 pointers in L5.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "cap-theorem-en",
+      "prompt": "explain the CAP theorem to me — i keep hearing about it but the wikipedia definition is useless",
+      "expected_output": "Five-layer lesson in English. Likely uses pseudocode rather than a real language (this is a protocol concept). L1 should frame the partition trade-off concretely. L4 should show what 'choosing C' vs 'choosing A' looks like during a partition.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "gil-cn",
+      "prompt": "Python 的 GIL 到底是什么？我以为多线程能加速但是好像没用",
+      "expected_output": "Five-layer lesson in Chinese, code in Python. L2 must contrast CPU-bound (threads don't help) vs I/O-bound (threads do help) with timing. L4 shows the wrong intuition the user already stated. L5 points at multiprocessing, asyncio, free-threaded Python.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "name": "monad-en",
+      "prompt": "i've tried to understand monads four times. teach me with code that actually makes sense",
+      "expected_output": "Five-layer lesson in English. Code should NOT be Python (the concept loses too much). TypeScript or Haskell. L1 should frame monads as a *pattern for chaining computations that carry context* — not 'a monoid in the category of endofunctors'. L4 shows the trap of nested .then() / nested if-none chains that monads exist to flatten.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "name": "grpo-cn",
+      "prompt": "讲一下 GRPO，我看了几遍论文还是没搞懂它和 PPO 的区别",
+      "expected_output": "Five-layer lesson in Chinese. L2 MUST be PyTorch pseudocode (not runnable), with '# pseudocode' marker, [B, G] shape annotations for group-relative rewards, and a 2-3 line comparison with PPO (showing PPO uses learned value V vs GRPO uses group mean — that's the seam). L4 should hit a wrong intuition (e.g. 'GRPO is just PPO without a critic' is incomplete — it changes the variance/baseline story). L5 points to KL penalty, sampling group size, and DPO as an even-more-stripped alternative.",
+      "files": []
+    },
+    {
+      "id": 6,
+      "name": "moe-en",
+      "prompt": "i keep seeing 'Mixture of Experts' in model papers. explain how MoE actually works — what does 'routing' mean here?",
+      "expected_output": "Five-layer lesson in English. L2 MUST be PyTorch pseudocode (not runnable). MUST include shape transitions: [B, T, D] → [B, T, E] (gating) → [B, T, K] (top-k) → [N, D] (dispatched per expert) → [B, T, D] (combined). Must NOT collapse routing into a per-token for-loop (that's the wrong mental model). L4 shows the load-balancing trap (one expert hogging all tokens) or the wrong-intuition trap ('MoE = ensemble of experts averaged' — no, it's sparse routing). L5 points at auxiliary load-balancing loss, expert capacity, switch transformers.",
+      "files": []
+    }
+  ]
+}

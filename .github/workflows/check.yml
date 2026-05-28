@@ -1,0 +1,67 @@
+name: check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate evals.json schema
+        run: |
+          python3 - <<'PY'
+          import json
+          d = json.load(open('evals/evals.json'))
+          assert 'skill_name' in d, 'evals.json missing skill_name'
+          assert 'evals' in d and isinstance(d['evals'], list), 'evals.json missing evals[] array'
+          assert len(d['evals']) > 0, 'evals.json has no eval cases'
+          for e in d['evals']:
+              for k in ('id', 'name', 'prompt', 'expected_output'):
+                  assert k in e, f'eval missing field {k!r}: {e}'
+          print(f'OK: {len(d["evals"])} eval(s) valid')
+          PY
+
+      - name: Validate SKILL.md frontmatter
+        run: |
+          python3 - <<'PY'
+          import re
+          c = open('SKILL.md').read()
+          m = re.match(r'^---\n(.*?)\n---', c, re.DOTALL)
+          assert m, 'SKILL.md must start with YAML frontmatter'
+          fm = m.group(1)
+          assert re.search(r'^name:\s*\S', fm, re.M), 'frontmatter missing name'
+          assert re.search(r'^description:', fm, re.M), 'frontmatter missing description'
+          print('OK: SKILL.md frontmatter valid')
+          PY
+
+      - name: Validate referenced files exist
+        run: |
+          python3 - <<'PY'
+          import re, os
+          c = open('SKILL.md').read()
+          refs = sorted(set(re.findall(r'\((references/[^)]+\.md)\)', c)))
+          missing = [r for r in refs if not os.path.exists(r)]
+          assert not missing, f'referenced files missing: {missing}'
+          print(f'OK: {len(refs)} reference link(s) resolve')
+          PY
+
+      - name: Build release zip
+        run: bash scripts/package-skill.sh
+
+      - name: Verify zip contents
+        run: |
+          set -euo pipefail
+          if ! zipinfo -1 dist/agent-teacher.zip | grep -Fxq "SKILL.md"; then
+            echo "ERROR: SKILL.md missing from zip" >&2
+            exit 1
+          fi
+          if zipinfo -1 dist/agent-teacher.zip | grep -qE '^(evals|dist|\.claude-plugin)/'; then
+            echo "ERROR: excluded directory leaked into zip" >&2
+            zipinfo -1 dist/agent-teacher.zip | grep -E '^(evals|dist|\.claude-plugin)/' >&2
+            exit 1
+          fi
+          echo "OK: zip audit passed"

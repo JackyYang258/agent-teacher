@@ -1,6 +1,6 @@
 <div align="center">
   <h1>AgentTeacher</h1>
-  <p><b>好概念，配好代码。</b></p>
+  <p><b>让AI做你的老师。</b></p>
   <p><a href="README.md">English</a> · <a href="README.zh-CN.md"><b>中文</b></a></p>
   <a href="https://github.com/JackyYang258/AgentTeacher/stargazers"><img src="https://img.shields.io/github/stars/JackyYang258/AgentTeacher?style=flat-square" alt="Stars"></a>
   <a href="https://github.com/JackyYang258/AgentTeacher/releases"><img src="https://img.shields.io/github/v/tag/JackyYang258/AgentTeacher?label=version&style=flat-square" alt="Version"></a>

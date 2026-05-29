@@ -9,11 +9,11 @@
 
 ## 为什么
 
-问 LLM "讲一下 GRPO" 或 "MoE 是怎么路由 token 的"，你会得到一大段散文、半截公式、加上一段需要 40 行 `nn.Module` 脚手架才能跑的代码。心智模型始终没建立起来。问题不在于模型不懂这个概念，而是"解释 X"这个任务**没有形状**，所以每次都在临场发挥。
+我每天读 AI paper，"扫过一遍"和"真懂了"之间差距最大的就是那些 dense concept —— GRPO 里的 group-relative advantage、MoE 的 expert routing、FlashAttention 的 attention tiling。默认的 LLM 解释会撞上两种失败模式：要么是没有代码锚定的散文，要么是被 60 行 model + dataloader 设置淹没的算法。
 
-AgentTeacher 给它一个形状：每个概念都走相同的六层骨架 —— 直觉、例子、拆解、陷阱、延伸、测试题 —— 例子要么是 10 行能跑的 REPL 片段，要么是带 shape 注释的 PyTorch 伪代码。**刚性就是价值**。一旦结构锁定，解释的质量从模型不再临场发挥的那一刻起就上一个台阶。
+AgentTeacher 给它一个框架：每个概念都走相同的六层骨架 —— 直觉、例子、拆解、陷阱、延伸、测试题 —— 例子要么是 10 行能跑的 REPL 片段，要么是带 shape 注释的 PyTorch 伪代码。结构锁定后，解释的质量从模型不再临场发挥的那一刻起就上一个台阶。
 
-主要针对 **AI/ML 概念**——那种"看过一遍"和"真懂了"之间差距最大的概念：训练算法（GRPO、PPO、DPO、RLHF）、架构（MoE、FlashAttention、Mamba、attention 变体）以及它们底下那些层。对通用编程概念也一样适用 —— 闭包、generator、channel、ownership。
+主要针对 **AI/ML 概念**：训练算法（GRPO、PPO、DPO、RLHF）、架构（MoE、FlashAttention、Mamba、attention 变体）。对通用编程概念也一样适用 —— 闭包、generator、channel、ownership。
 
 ## 看效果
 
@@ -36,7 +36,7 @@ AgentTeacher 给它一个形状：每个概念都走相同的六层骨架 ——
 </tr>
 </table>
 
-每个 lesson 都配了 sidecar 伪代码文件（[`grpo-pseudocode.py`](assets/examples/grpo-pseudocode.py)、[`moe-pseudocode.py`](assets/examples/moe-pseudocode.py)），可以在编辑器里看高亮，一边读 prose 一边对照代码。
+每个回答都配了轻量级的伪代码文件（[`grpo-pseudocode.py`](assets/examples/grpo-pseudocode.py)、[`moe-pseudocode.py`](assets/examples/moe-pseudocode.py)），可以在编辑器里看高亮，一边读解释一边对照代码。
 
 ## 使用方式
 
@@ -76,7 +76,7 @@ Skill 会根据自然语言请求自动触发，不需要 slash command。例如
 
 ## 骨架
 
-六层。每一层都有自己的职责。**不要跳过任何一层**；某一层对特定概念感觉冗余的话，就用一行带过，但**不要省略**。刚性是输出可预测性的来源。
+骨架分为六层，每一层都有自己的职责。
 
 | 部分 | 职责 | 长度 |
 |---|---|---|
@@ -90,7 +90,7 @@ Skill 会根据自然语言请求自动触发，不需要 slash command。例如
 **两种例子模式：**
 
 - **Mode A — runnable.** 语言特性、小算法、API。5-20 行 REPL snippet，把中间状态打印出来，不带外部依赖。
-- **Mode B — 结构化伪代码.** 架构（Transformer、MoE、Mamba）、训练算法（GRPO、PPO、DPO）、kernel 概念（FlashAttention、paged attention）。真 PyTorch 语法，砍掉脚手架，**每个 shape 转换都要标注**，跟 cousin 概念的差异要写出来。Sidecar 文件会自动写到 `/tmp/<concept>-pseudocode.py` 方便在编辑器里看。
+- **Mode B — 结构化伪代码.** 架构（Transformer、MoE、Mamba）、训练算法（GRPO、PPO、DPO）、kernel 概念（FlashAttention、paged attention）。真 PyTorch 语法，砍掉脚手架，**每个 shape 转换都要标注**，跟相近概念的差异要写出来。文件会自动写到 `/tmp/<concept>-pseudocode.py` 方便在编辑器里看。
 
 完整每层 playbook：[references/teaching-method.md](references/teaching-method.md)。代码风格规则：[references/code-style-for-teaching.md](references/code-style-for-teaching.md)。概念 → 语言映射：[references/concept-to-language.md](references/concept-to-language.md)。
 
@@ -110,20 +110,14 @@ Skill 会根据自然语言请求自动触发，不需要 slash command。例如
 
 代码语言按概念选：DL 架构/训练算法用 PyTorch 伪代码；通用 CS / 算法用 Python；channel / goroutine 用 Go；ownership / borrowing 用 Rust；指针 / 内存用 C；DOM / 事件循环用 JavaScript；类型系统 / monad 用 TypeScript 或 Haskell。完整映射在 [references/concept-to-language.md](references/concept-to-language.md)。
 
-**八个可选 enrichment.** 当概念性质允许时，骨架最多可选挂 5 个增强：math tier（标准公式或 Big-O 递推）、state tracking（DL 是 tensor shape；协议是参与方状态；算法是数据 trace）、design rationale（"为什么除以 √d 而不是 √2d"、"为什么指数退避"）、cousin matrix（BN vs LN、GRPO vs PPO、TCP vs UDP）、prerequisite + variants 依赖图、misconception 列表、visualization（heatmap、状态机、时序图），以及 invariant（heap 性质、Raft safety properties、BST 不变量）。每个 enrichment **只有当概念性质触发它时才开启** —— attention 开 5 个、B+ tree 开 4 个、Raft 开 5 个、tensor broadcasting 开 1 个、closure 开 0 个。框架以 DL/ML 为主调，但多个模块也适用于数据结构、分布式协议、复杂算法。完整决策规则和 per-module playbook（DL 和非 DL 例子都有）在 [references/enrichments.md](references/enrichments.md)。
-
-## 背景
-
-我每天读 AI paper，"扫过一遍"和"真懂了"之间差距最大的就是那些 dense concept —— GRPO 里的 group-relative advantage、MoE 的 expert routing、FlashAttention 的 attention tiling。默认的 LLM 解释会撞上两种失败模式：要么是没有代码锚定的散文，要么是被 60 行 model + dataloader 设置淹没的算法。心智模型始终没落到位。
-
-所以我开始一层一层地修结构。先是给自己写笔记：直觉先行 → 一段最小代码 → 不重复语法、只讲"为什么有这段"的拆解 → 陷阱 → 几个延伸方向。这一套用下来比之前的笔记效果好得多。于是我把规则抽成一个 skill：一套约束语言，任何还可以的 agent 都能跑得稳，严格到每次输出都是一份我一周后还能想起来的 lesson。
+**八个可选 enrichment.** 当概念性质允许时，骨架最多可选挂 5 个增强：math tier（标准公式或 Big-O 递推）、state tracking（DL 是 tensor shape；协议是参与方状态；算法是数据 trace）、design rationale（"为什么除以 √d 而不是 √2d"、"为什么指数退避"）、cousin matrix（BN vs LN、GRPO vs PPO、TCP vs UDP）、prerequisite + variants 依赖图、misconception 列表、visualization（heatmap、状态机、时序图），以及 invariant（heap 性质、Raft safety properties、BST 不变量）。每个 enrichment **只有当概念性质触发它时才开启**。框架以 DL/ML 为主调，但多个模块也适用于数据结构、分布式协议、复杂算法。完整决策规则和 per-module playbook（DL 和非 DL 例子都有）在 [references/enrichments.md](references/enrichments.md)。
 
 ## 贡献
 
 欢迎贡献。贡献流程和双语策略在 [CONTRIBUTING.zh-CN.md](CONTRIBUTING.zh-CN.md)（[English](CONTRIBUTING.md)）。
 
 - 觉得 AgentTeacher 帮到你了，给个 star 或者分享给朋友。
-- 看到 concept 处理得不到位（lesson 太干、代码形式选错、陷阱没说到点子上）？开个 issue 或 PR。
+- 看到 concept 处理得不到位？开个 issue 或 PR。
 
 ## License
 

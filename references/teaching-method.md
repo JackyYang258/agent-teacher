@@ -1,10 +1,10 @@
 # Teaching method · the five-layer spine in detail
 
-This is the playbook for each layer. Use it when you're not sure whether a draft of L1, L3, or L4 is good enough. Each section has a "good" version and a "bad" version drawn from a real concept so the difference is concrete.
+This is the playbook for each part of the six-part spine. Use it when you're not sure whether a draft of the intuition, walkthrough, or trap is good enough. Each section has a "good" version and a "bad" version drawn from a real concept so the difference is concrete.
 
 ---
 
-## L1 · One-sentence intuition
+## Intuition
 
 **Job:** Give the reader a *reason to care* before any code shows up. Frame the concept as a solution to a problem they could have felt themselves.
 
@@ -35,7 +35,7 @@ This is the playbook for each layer. Use it when you're not sure whether a draft
 
 ---
 
-## L2 · The example — runnable, or structured pseudocode
+## Example — runnable, or structured pseudocode
 
 **Job:** Give the reader something concrete enough to *predict the behavior of* — either by running it themselves, or by reading the shape annotations and following the control flow.
 
@@ -207,13 +207,13 @@ If you're genuinely torn (rare), default to Mode B with a note: "the runnable ve
 
 ---
 
-## L3 · Walk through the code
+## Walkthrough
 
 **Job:** Translate the code into a few labeled *purpose units* so the reader can predict what each section does without running it.
 
 **Rules:**
 
-- 2–4 segments per L2 block. More than 4 means the L2 is doing too much.
+- 2–4 segments per example block. More than 4 means the example is doing too much.
 - Quote each segment first, then explain. Don't make the reader scroll back up.
 - Explain *purpose*, not *syntax*. "This binds `count` to 0" is bad. "We need a place to store the count that survives between calls — `count = 0` is that place, sitting inside `make_counter`'s scope" is good.
 - If a segment has a subtle line (e.g. `nonlocal count`), call it out — that's exactly where confusion lives.
@@ -249,7 +249,7 @@ Notice the walkthrough never says "the `def` keyword defines a function." That's
 
 ---
 
-## L4 · The trap
+## Trap
 
 **Job:** Show the bug the concept exists to prevent, or the wrong intuition newcomers reach for. This is the layer that makes the concept feel *load-bearing* rather than arbitrary.
 
@@ -284,7 +284,7 @@ This single trap teaches more than a paragraph on "late binding."
 
 ---
 
-## L5 · Where to go from here
+## Pointers — where to go from here
 
 **Job:** Hand the reader a map, not a lesson.
 
@@ -305,9 +305,9 @@ Three pointers. The reader can pick one and ask a follow-up. That's the design.
 
 ---
 
-## L6 · Test questions (the drill)
+## Test questions
 
-**Job:** Convert the lesson from "I just read about X" into "I could answer if someone asked me about X." Real checks of understanding don't ask "explain X" — they ask sideways questions that probe whether you actually got it. L6 simulates that.
+**Job:** Convert the lesson from "I just read about X" into "I could answer if someone asked me about X." Real checks of understanding don't ask "explain X" — they ask sideways questions that probe whether you actually got it. The test-questions section simulates that.
 
 A note on framing: present the section simply as "test questions" or just numbered questions. Don't label them as interview questions or set up an interview scenario — the phrasing of the questions themselves carries the externally-shaped quality, no scenery needed.
 
@@ -318,7 +318,7 @@ A note on framing: present the section simply as "test questions" or just number
 - Phrase as an examiner would — concrete, specific, sometimes adversarial. Not "do you understand monads?" but "show me a `for` loop that's a hidden monad."
 - One `> Hint:` line per question — a pointer to where in the lesson the answer lives, not the answer itself. The hint should make the reader feel "oh, I know where to look," not "oh, the answer is X."
 - **No answers given by default.** If the reader replies with an attempt, then walk through it.
-- The kinds of questions vary slightly by domain but the L6 structure does not:
+- The kinds of questions vary slightly by domain but the structure does not:
   - Language features / algorithms / data structures → "predict the output," "modify the example," "trace the recursion."
   - ML architectures / training algorithms → "what's the shape after X," "what's the FLOPs cost," "what breaks if Y."
   - Systems / protocols → "what happens if message Z is lost," "what's the failure mode under partition."
@@ -350,7 +350,7 @@ Good:
 >
 >    > Hint: compare how the two languages represent captured variables.
 
-Why good: Q1 reuses the L4 trap as a question (a very common pattern). Q2 is "modify the L2 example" — the reader has to actually internalize the structure to rewrite it. Q3 is the cross-language trade-off question that probes senior-level understanding. Hints point at *concepts*, not answers.
+Why good: Q1 reuses the trap as a question (a very common pattern). Q2 is "modify the example" — the reader has to actually internalize the structure to rewrite it. Q3 is the cross-language trade-off question that probes senior-level understanding. Hints point at *concepts*, not answers.
 
 Bad:
 
@@ -370,7 +370,7 @@ Good:
 >
 >    > Hint: think about what PPO needs to *train* in addition to the policy.
 >
-> 2. Look at the L2 pseudocode. After `grpo_advantages(rewards)`, what's the shape of `A`? Why does the next line need `A.unsqueeze(-1)`?
+> 2. Look at the pseudocode. After `grpo_advantages(rewards)`, what's the shape of `A`? Why does the next line need `A.unsqueeze(-1)`?
 >
 >    > Hint: compare it with `log_pi`'s shape.
 >
@@ -378,7 +378,7 @@ Good:
 >
 >    > Hint: zero gradient happens when all four samples have the same reward.
 
-Why good: Q1 nails the recall/contrast layer ("what's the delta"). Q2 forces the reader back into the code and the shape transitions — verifies they actually read L2 rather than skimmed it. Q3 is a trade-off question that tests whether the L4 trap actually stuck.
+Why good: Q1 nails the recall/contrast layer ("what's the delta"). Q2 forces the reader back into the code and the shape transitions — verifies they actually read the example rather than skimmed it. Q3 is a trade-off question that tests whether the trap actually stuck.
 
 Bad:
 
@@ -396,7 +396,7 @@ Good:
 >
 >    > Hint: count tokens per expert, then count parameters touched.
 >
-> 2. From the L2 pseudocode, walk through the shape of `out` across the loop: where does it get allocated, where does it accumulate, where does it return.
+> 2. From the pseudocode, walk through the shape of `out` across the loop: where does it get allocated, where does it accumulate, where does it return.
 >
 >    > Hint: read the comments on `out`, `mask`, `tokens`, and the `+=` line.
 >
@@ -404,7 +404,7 @@ Good:
 >
 >    > Hint: load balancing isn't free — there's an auxiliary loss.
 
-Why good: Q1 is the FLOPs question that MoE understanding usually pivots on. Q2 forces shape tracing through the dispatch/combine pattern. Q3 directly addresses the L4 trap (load imbalance).
+Why good: Q1 is the FLOPs question that MoE understanding usually pivots on. Q2 forces shape tracing through the dispatch/combine pattern. Q3 directly addresses the trap (load imbalance).
 
 ### Choosing the three questions
 
@@ -412,18 +412,18 @@ Use this allocation as a default:
 
 | Difficulty | Source | Test |
 |---|---|---|
-| Q1 — recall / contrast | L1 + L4 | Can they articulate what the concept is and what it isn't? |
-| Q2 — read the code / trace | L2 + L3 | Can they read the example, or did they skim it? |
-| Q3 — design / trap / debug | L4 + L5 | Can they apply it to a situation that wasn't in the lesson? |
+| Q1 — recall / contrast | intuition + trap | Can they articulate what the concept is and what it isn't? |
+| Q2 — read the code / trace | example + walkthrough | Can they read the example, or did they skim it? |
+| Q3 — design / trap / debug | trap + pointers | Can they apply it to a situation that wasn't in the lesson? |
 
-Q3 is the most valuable and the hardest to write — it must require the reader to *combine* something from L4 (a known failure mode) with something they have to reason about themselves. If Q3 can be answered by quoting one line from the lesson, it's actually a Q1.
+Q3 is the most valuable and the hardest to write — it must require the reader to *combine* something from the trap (a known failure mode) with something they have to reason about themselves. If Q3 can be answered by quoting one line from the lesson, it's actually a Q1.
 
 ### Why this layer is not "理解检查" by another name
 
-The user explicitly said earlier they didn't want a "do you understand?" check. L6 is not that. The difference:
+The user explicitly said earlier they didn't want a "do you understand?" check. Test questions are not that. The difference:
 
 - "理解检查" = a generic prompt aimed at the reader's confidence ("did this make sense?"). Subjective, low information.
-- L6 = a concrete, externally-shaped task ("here's the exact question someone could pose to check this"). Objective, high information, transferable.
+- Test questions = a concrete, externally-shaped task ("here's the exact question someone could pose to check this"). Objective, high information, transferable.
 
 The reader can choose to engage or not. If they read the questions and feel "yeah, I could answer all three" — that's a useful signal. If they read Q3 and think "no idea" — also a useful signal, and the hint tells them where to go.
 
@@ -445,10 +445,10 @@ Do not try to compress. A rushed lesson is worse than a partial one.
 
 Read the finished lesson back as if you knew nothing about the concept. Ask:
 
-- Did L1 make me want to read on?
-- Could I paste L2 and see it work?
-- Does L3 let me predict what each chunk does without reading the code again?
-- Does L4 explain *why I'd ever need this*?
-- Does L5 give me one obvious next thing to ask about?
+- Did the intuition make me want to read on?
+- Could I paste the example and see it work?
+- Does the walkthrough let me predict what each chunk does without reading the code again?
+- Does the trap explain *why I'd ever need this*?
+- Do the pointers give me one obvious next thing to ask about?
 
 If all five are yes, ship it.

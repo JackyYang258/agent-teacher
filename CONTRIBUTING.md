@@ -23,7 +23,7 @@ The project supports both English and Chinese, but in different layers:
 
 - **New worked examples** under `assets/examples/`. Pick a concept the existing examples don't cover (Raft, B+ tree, FlashAttention, type inference, …). Run the skill on it, save the output, polish for clarity. See "Adding a worked example" below.
 - **Misclassified concepts** in [`references/concept-to-language.md`](references/concept-to-language.md). If you think a concept's recommended language or Mode (A vs B) is wrong, open an issue with a justification.
-- **Missing enrichments** for concepts. If you can show a concept that should fire E3 (design rationale) or E8 (invariants) but isn't reflected in [`references/enrichments.md`](references/enrichments.md)'s calibration list, propose an addition.
+- **Missing enrichments** for concepts. If you can show a concept that should fire design rationale or invariants but isn't reflected in [`references/enrichments.md`](references/enrichments.md)'s calibration list, propose an addition.
 - **Bilingual READMEs out of sync.** When one is updated, the other must follow. Drift here is a real bug.
 - **CI / packaging improvements.** The two workflows live in `.github/workflows/`; the packaging script is `scripts/package-skill.sh`.
 
@@ -31,8 +31,8 @@ The project supports both English and Chinese, but in different layers:
 
 Open an issue before doing the work:
 
-- **Adding or removing a layer in the spine** (L1–L6). The six-layer contract is core. We don't add L7 lightly; we don't remove a layer lightly.
-- **Adding a ninth enrichment.** The current eight (E1–E8) were debated. New ones must demonstrate they fill a real gap that the existing eight can't cover.
+- **Adding or removing a part of the spine.** The six-part contract (intuition → example → walkthrough → trap → pointers → test questions) is core. We don't add a seventh part lightly; we don't remove a part lightly.
+- **Adding a ninth enrichment.** The current eight were debated. New ones must demonstrate they fill a real gap that the existing eight can't cover.
 - **Renaming the project, the skill, or the GitHub repo.** Lots of links to update.
 - **Changing Mode A / Mode B semantics.** The runnable-vs-pseudocode binary with three flavors of Mode B is intentional.
 
@@ -50,7 +50,7 @@ AgentTeacher/
 │   ├── teaching-method.md                ← per-layer playbook with examples
 │   ├── code-style-for-teaching.md        ← Mode A / Mode B / trace block rules
 │   ├── concept-to-language.md            ← which language for which concept
-│   └── enrichments.md                    ← E1–E8 playbook + decision rules
+│   └── enrichments.md                    ← eight enrichments playbook + decision rules
 ├── assets/examples/
 │   ├── grpo-en.md / grpo-zh.md           ← bilingual worked examples
 │   ├── moe-en.md  / moe-zh.md
@@ -73,7 +73,7 @@ AgentTeacher/
 1. **Run the skill on the target concept.** If you've installed AgentTeacher locally (`ln -s ... ~/.claude/skills/agent-teacher`), open a fresh Claude Code session and ask, e.g., "explain Raft" or "讲一下 B+ 树".
 2. **Copy the full output** into a new file: `assets/examples/<concept>-en.md` and/or `<concept>-zh.md`. Use existing examples (`grpo-en.md`, `moe-zh.md`) as templates.
 3. **Add a header block** at the top of the example listing the Mode, language, fired enrichments, and (if Mode B pseudocode) a sidecar code file path.
-4. **If Mode B**, save the L2 pseudocode block to `assets/examples/<concept>-pseudocode.py`. The sidecar is language-agnostic (code comments can be in either language) — one sidecar serves both `-en` and `-zh` versions.
+4. **If Mode B**, save the example pseudocode block to `assets/examples/<concept>-pseudocode.py`. The sidecar is language-agnostic (code comments can be in either language) — one sidecar serves both `-en` and `-zh` versions.
 5. **Verify**: run `bash scripts/package-skill.sh` and confirm the new file is included in `dist/agent-teacher.zip`. The package script reads from `git ls-files`, so `git add` your new files first.
 6. **Open a PR.** If you only wrote one language version, mention this in the PR description — a maintainer or another contributor will translate the other side.
 

@@ -5,15 +5,15 @@
 > **Language:** Chinese
 > **Sidecar code:** `/tmp/grpo-pseudocode.py` (also frozen below as `grpo-pseudocode.py`)
 
-This is the full skill output for the GRPO eval, captured as a regression reference. The L1–L6 structure, the shape annotations in the pseudocode, the comparison-with-PPO line, the L4 trap framing, and the difficulty ladder of the test questions all match what `SKILL.md` and `references/teaching-method.md` prescribe.
+This is the full skill output for the GRPO eval, captured as a regression reference. The six-part structure, the shape annotations in the pseudocode, the comparison-with-PPO line, the trap framing, and the difficulty ladder of the test questions all match what `SKILL.md` and `references/teaching-method.md` prescribe.
 
 ---
 
-## L1 · 一句话直觉
+## 直觉
 
 PPO 训练时需要一个 critic 网络 V 来当 baseline 减方差 —— 这个 critic 既贵又难训。GRPO 的洞察是：**对同一个 prompt 多采几个 completion，这一组的 reward 均值就是天然的 baseline，根本不用学**。所以 GRPO ≈ "把 PPO 的 critic 换成同组采样的平均分"。
 
-## L2 · 结构化伪代码
+## 例子 · 结构化伪代码
 
 ```python
 # pseudocode — illustrative, not runnable
@@ -56,7 +56,7 @@ loss = pg_loss + beta * kl_penalty
 
 完整伪代码同时写到了 `/tmp/grpo-pseudocode.py`（也归档于 `assets/examples/grpo-pseudocode.py`），方便在编辑器里看高亮和拷贝。
 
-## L3 · 拆解
+## 拆解
 
 **(1) Group sampling —— "G" 的来源**
 
@@ -90,7 +90,7 @@ loss    = pg_loss + beta * kl_penalty
 
 注意 `A_t = A.unsqueeze(-1)` 这一步：advantage 是 completion-level（`[B, G]`），log_prob 是 token-level（`[B, G, T]`），所以**同一个 completion 的每个 token 共享同一个 advantage 标量**。这意味着 GRPO 的信号粒度是 completion 级的，不是 token 级的 —— 它假设"这个回答好/坏"对回答里所有 token 都一视同仁。
 
-## L4 · 陷阱
+## 陷阱
 
 "GRPO 就是 PPO 把 critic 删了" —— **不完整**。GRPO 不是没 baseline，而是把 baseline 从"模型学的 V(s)"换成"同 prompt 下采样的 mean"。这个换法有后果：
 
@@ -108,7 +108,7 @@ PPO 的 critic 会给出绝对的"这个状态值多少"，所以即使一组采
 
 **实践含义**：reward model 的设计必须让同一 prompt 下的 G 个采样**有意义地分散**。如果 reward 是离散的（只有 0/1 / 对错），就要更大的 G 才能确保一组里既有对又有错。这就是为什么 GRPO 在数学/代码这类"答案可验证、reward 容易二值化"的场景里特别需要大 G。
 
-## L5 · 往下走
+## 延伸 · 往下走
 
 — **KL 的 k3 estimator**：上面伪代码里 `exp(δ) - δ - 1` 而不是直接用 `log_pi - log_pi_ref`，是因为 k3 估计的 KL 是非负、低方差的。John Schulman 有一篇短 blog 专门讲 k1/k2/k3 三种 KL 估计，DeepSeekMath 论文也用这个。
 — **G 怎么选**：太小（G=2）信号噪声大、advantage 退化；太大（G=32+）显存和算力线性涨且边际收益递减。论文里典型 G=16。
@@ -120,7 +120,7 @@ PPO 的 critic 会给出绝对的"这个状态值多少"，所以即使一组采
 >
 > > Hint: 想想 PPO 除了 policy 之外还要训练什么。
 
-> **2.** 看 L2 的伪代码。`grpo_advantages(rewards)` 返回的 `A` 形状是什么？为什么下一行需要 `A.unsqueeze(-1)` 才能跟 `log_pi` 相乘？
+> **2.** 看伪代码。`grpo_advantages(rewards)` 返回的 `A` 形状是什么？为什么下一行需要 `A.unsqueeze(-1)` 才能跟 `log_pi` 相乘？
 >
 > > Hint: 对比 `log_pi` 的形状，看看少了哪个维度。
 

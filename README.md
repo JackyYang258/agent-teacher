@@ -78,14 +78,14 @@ The skill auto-triggers from natural requests, no slash command needed. Example 
 
 Six layers. Each has a job. Don't skip layers; if a layer feels redundant on a particular concept, keep it but make it one line. The strictness is what makes the output predictable.
 
-| Layer | Job | Length |
+| Part | Job | Length |
 |---|---|---|
-| L1 · Intuition | Frame the problem the concept solves | 1–2 sentences |
-| L2 · Example | Runnable code (5–20 lines) **or** structured pseudocode for architectures and training algorithms | one code block |
-| L3 · Walkthrough | Group the example into purpose units, not line-by-line narration | 2–4 paragraphs |
-| L4 · Trap | The bug the concept exists to prevent or the wrong intuition newcomers reach for | one snippet + one line |
-| L5 · Pointers | 2–3 adjacent concepts. **No expansion** | 3 lines |
-| L6 · Test drill | 2–3 questions at increasing difficulty (recall/contrast → read the code → design/trap). Hints, **no answers** | 3 questions |
+| Intuition | Frame the problem the concept solves | 1–2 sentences |
+| Example | Runnable code (5–20 lines) **or** structured pseudocode for architectures and training algorithms | one code block |
+| Walkthrough | Group the example into purpose units, not line-by-line narration | 2–4 paragraphs |
+| Trap | The bug the concept exists to prevent or the wrong intuition newcomers reach for | one snippet + one line |
+| Pointers | 2–3 adjacent concepts. **No expansion** | 3 lines |
+| Test questions | 2–3 questions at increasing difficulty (recall/contrast → read the code → design/trap). Hints, **no answers** | 3 questions |
 
 **Two example modes:**
 
@@ -100,7 +100,7 @@ Not a tutorial generator; a constraint system for technical explanations. Docume
 
 | Element | Rule |
 |---|---|
-| Form | Six layers, no exceptions. L4 is the layer most lessons skip; L6 is the layer most lessons omit entirely |
+| Form | Six parts, no exceptions. The trap is the section most lessons skip; the test questions are what most lessons omit entirely |
 | Code | Real names (`gate_logits`, `expert_outputs`), not abbreviations (`g`, `e`) |
 | Shapes | Every transition annotated: `[B, T, D] → [B, T, E] → [B, T, K] → [N, D]`. In Mode B this is non-negotiable |
 | Pseudocode | Valid Python/PyTorch with scaffolding removed. Never natural-language `FOR each token DO ...` — that throws away what code form gives you |
@@ -121,7 +121,7 @@ So I started fixing the structure one layer at a time. First just for myself, wr
 ## Support
 
 - If AgentTeacher helped you, give it a star or share it.
-- Concept treatments that feel off (too dry, wrong code form, weak L4)? Open an issue or PR.
+- Concept treatments that feel off (too dry, wrong code form, weak trap)? Open an issue or PR.
 
 ## License
 

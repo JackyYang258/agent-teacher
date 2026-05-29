@@ -23,7 +23,7 @@
 
 - **新增 worked example**，放在 `assets/examples/` 下。挑现有例子没覆盖的概念（Raft、B+ 树、FlashAttention、类型推断…）。让 skill 跑一遍，保存输出，做点润色。参见下面的"新增 worked example"。
 - **概念分类错误**，在 [`references/concept-to-language.md`](references/concept-to-language.md) 里。如果你觉得某个概念推荐的语言或 Mode（A vs B）选错了，开 issue 说明理由。
-- **enrichment 触发判断**。如果你能找出一个概念应该触发 E3（design rationale）或 E8（invariants）但 [`references/enrichments.md`](references/enrichments.md) 的 calibration list 里没体现，提议新增。
+- **enrichment 触发判断**。如果你能找出一个概念应该触发 design rationale 或 invariants 但 [`references/enrichments.md`](references/enrichments.md) 的 calibration list 里没体现，提议新增。
 - **双语 README 不同步**。改了一边必须同步另一边。这里的 drift 是真 bug。
 - **CI / 打包改进**。两个 workflow 在 `.github/workflows/`；打包脚本是 `scripts/package-skill.sh`。
 
@@ -31,8 +31,8 @@
 
 改之前先开 issue：
 
-- **改动六层骨架的层数**（L1–L6）。六层契约是核心，不轻易加 L7，也不轻易删层。
-- **新增第九个 enrichment**。当前 E1–E8 是讨论后定下来的，新加的必须证明它填的是现有 8 个都覆盖不了的空白。
+- **改动六部分骨架**。六部分（直觉 → 例子 → 拆解 → 陷阱 → 延伸 → 测试题）是核心契约，不轻易加第七部分，也不轻易删某一部分。
+- **新增第九个 enrichment**。当前 8 个是讨论后定下来的，新加的必须证明它填的是现有 8 个都覆盖不了的空白。
 - **重命名项目、skill 或 GitHub repo**。会涉及大量链接更新。
 - **改 Mode A / Mode B 的语义**。runnable-vs-pseudocode 加上 Mode B 的三种 flavor 是刻意设计。
 
@@ -50,7 +50,7 @@ AgentTeacher/
 │   ├── teaching-method.md                ← 每层 playbook 配例子
 │   ├── code-style-for-teaching.md        ← Mode A / Mode B / trace block 规则
 │   ├── concept-to-language.md            ← 哪个概念用哪个语言
-│   └── enrichments.md                    ← E1–E8 playbook + 决策规则
+│   └── enrichments.md                    ← 八个 enrichment playbook + 决策规则
 ├── assets/examples/
 │   ├── grpo-en.md / grpo-zh.md           ← 双语 worked examples
 │   ├── moe-en.md  / moe-zh.md
@@ -73,7 +73,7 @@ AgentTeacher/
 1. **让 skill 跑一遍目标概念**。如果你本地装了 AgentTeacher（`ln -s ... ~/.claude/skills/agent-teacher`），开新的 Claude Code session 问，比如 "explain Raft" 或 "讲一下 B+ 树"。
 2. **复制完整输出**到新文件：`assets/examples/<concept>-en.md` 或 `<concept>-zh.md`。参考现有例子（`grpo-en.md`、`moe-zh.md`）的格式。
 3. **顶部加 header block**，列出 Mode、语言、触发的 enrichments，以及（如果是 Mode B 伪代码）sidecar 代码文件路径。
-4. **如果是 Mode B**，把 L2 伪代码块保存到 `assets/examples/<concept>-pseudocode.py`。sidecar 是语言无关的（代码注释可以是任一语言）—— 一份 sidecar 同时服务 `-en` 和 `-zh` 两个版本。
+4. **如果是 Mode B**，把例子伪代码块保存到 `assets/examples/<concept>-pseudocode.py`。sidecar 是语言无关的（代码注释可以是任一语言）—— 一份 sidecar 同时服务 `-en` 和 `-zh` 两个版本。
 5. **验证**：跑 `bash scripts/package-skill.sh`，确认新文件进了 `dist/agent-teacher.zip`。打包脚本基于 `git ls-files`，所以记得先 `git add`。
 6. **开 PR**。如果你只写了一种语言，PR 描述里说明，维护者或其他贡献者会补另一边。
 

@@ -18,7 +18,7 @@ The skill output is delivered in conversation, not as files. The only artifacts 
 - `references/teaching-method.md` — per-layer playbook with good/bad examples. The craft of each layer lives here.
 - `references/code-style-for-teaching.md` — rules for teaching code: Mode A (runnable + trace blocks for algorithms), Mode B (the three pseudocode flavors).
 - `references/concept-to-language.md` — concept area → recommended code language and Mode A/B form.
-- `references/enrichments.md` — the eight optional enrichments (E1–E8) and the decision checklist for when each fires.
+- `references/enrichments.md` — the eight optional enrichments (math tier, state tracking, design rationale, cousin matrix, prerequisites + variants, misconception list, visualization, invariants) and the decision checklist for when each fires.
 - `evals/evals.json` — test prompts with expected-output descriptions (closure, CAP, GIL, monad, GRPO, MoE).
 - `assets/examples/` — worked example outputs frozen from running the skill. Examples are bilingual: each concept has `<name>-en.md` and `<name>-zh.md` plus a shared language-agnostic `<name>-pseudocode.py` sidecar. New examples should ship in both languages; one-language contributions are accepted and a maintainer translates the other side.
 - `scripts/package-skill.sh` — builds the release archive.
@@ -39,13 +39,13 @@ Canonical project docs (`SKILL.md`, `AGENTS.md`, `CLAUDE.md`, `references/`) are
 
 ## Working Rules
 
-- The six-layer spine (L1 intuition → L2 example → L3 walkthrough → L4 trap → L5 pointers → L6 test questions) is the contract. Do not add L7, do not remove a layer. If a layer feels redundant for a specific concept, make it one line — don't drop it.
+- The six-part spine (intuition → example → walkthrough → trap → pointers → test questions) is the contract. Do not add a seventh part, do not remove a part. If one feels redundant for a specific concept, make it one line — don't drop it.
 - Mode A (runnable) vs Mode B (pseudocode) is binary. Don't introduce a third mode without strong evidence that a real concept fits neither.
 - Pseudocode in Mode B must follow the four rules in `references/code-style-for-teaching.md` §10: mark as pseudocode, annotate every shape change, drop scaffolding, show the seam to a cousin concept. The biggest regression risk is sliding into natural-language pseudocode (`FOR each token DO ...`) — that throws away everything code form gives us.
-- L6 test questions: 2–3, increasing difficulty (recall/contrast → read the code → design/trap), hints but no answers, framed as questions someone could pose. Do **not** label them "interview questions" or set an interview scenario in skill output — the phrasing of the questions itself carries the externally-shaped quality.
-- **Enrichments (E1–E8) are concept-driven, not concept-default.** Run the decision checklist in `references/enrichments.md` and fire only the modules whose trigger conditions hold. Hard cap: 5 per lesson. Hard floor: zero — a plain six-layer lesson is the right answer for most concepts. The biggest failure mode is firing all 8 on every concept "to be safe" — that produces 1500-word padded lessons, not better ones.
-- The enrichment framework was originally tuned for DL/ML but several modules (E2 state tracking, E3 design rationale, E4 cousin matrix, E5 prereq+variants, E7 visualization, E8 invariants) apply to broader CS: data structures, distributed protocols, complex algorithms. Plain **language features** (closures, generators, channels, ownership) still get zero enrichments — don't force a cousin matrix or design rationale onto a language construct.
-- Mode B has three flavors (DL pseudocode with shape annotations, protocol pseudocode with participant state, algorithm pseudocode with invariants + trace). E2 (state tracking) means the right thing in each flavor; don't apply DL shape-annotation conventions to protocol or algorithm pseudocode.
+- Test questions: 2–3, increasing difficulty (recall/contrast → read the code → design/trap), hints but no answers, framed as questions someone could pose. Do **not** label them "interview questions" or set an interview scenario in skill output — the phrasing of the questions itself carries the externally-shaped quality.
+- **Enrichments are concept-driven, not concept-default.** Run the decision checklist in `references/enrichments.md` and fire only the modules whose trigger conditions hold. Hard cap: 5 per lesson. Hard floor: zero — a plain six-part lesson is the right answer for most concepts. The biggest failure mode is firing all 8 on every concept "to be safe" — that produces 1500-word padded lessons, not better ones.
+- The enrichment framework was originally tuned for DL/ML but several modules (state tracking, design rationale, cousin matrix, prerequisites + variants, visualization, invariants) apply to broader CS: data structures, distributed protocols, complex algorithms. Plain **language features** (closures, generators, channels, ownership) still get zero enrichments — don't force a cousin matrix or design rationale onto a language construct.
+- Mode B has three flavors (DL pseudocode with shape annotations, protocol pseudocode with participant state, algorithm pseudocode with invariants + trace). State tracking means the right thing in each flavor; don't apply DL shape-annotation conventions to protocol or algorithm pseudocode.
 - SKILL.md states the contract; `references/teaching-method.md` is the playbook with examples. Changing one without the other is drift.
 - File output policy: Mode B writes a pseudocode sidecar to `/tmp/<slug>-pseudocode.<ext>` automatically; Mode A writes a file only when the user asks ("save this" / "做成笔记").
 - Keep `SKILL.md` under ~250 lines. Detailed playbooks go in `references/` and are loaded by reference on demand.
@@ -61,7 +61,7 @@ Canonical project docs (`SKILL.md`, `AGENTS.md`, `CLAUDE.md`, `references/`) are
 
 ## Current Risk Areas
 
-- **L6 softness drift.** Test questions can erode into "did this make sense?" self-checks. That is the failure mode the design explicitly rejected. Each L6 question must be answerable independently, with a concrete answer the reader can check themselves against the lesson.
+- **Test-question softness drift.** Test questions can erode into "did this make sense?" self-checks. That is the failure mode the design explicitly rejected. Each question must be answerable independently, with a concrete answer the reader can check themselves against the lesson.
 - **Mode A vs Mode B mis-selection.** Writing a "runnable" MoE forward becomes 60 lines of `nn.Module` scaffolding that buries the algorithm. The decision table in `SKILL.md` is canonical — Mode B is the right choice for architectures and training algorithms.
 - **Pseudocode shape annotations are load-bearing.** A pseudocode block without `# [B, T, D]`-style annotations is broken even when the syntax is valid. Reviewing a new lesson means scanning whether shape transitions are visible.
 - **Domain coverage.** Current `concept-to-language.md` maps roughly 30 concept areas. Newly common concepts (mechanistic interpretability primitives, diffusion training, RLHF variants beyond GRPO/DPO) may need an entry — but only add when a real lesson surfaces the gap, not preemptively.
@@ -69,7 +69,7 @@ Canonical project docs (`SKILL.md`, `AGENTS.md`, `CLAUDE.md`, `references/`) are
 
 ## Verification
 
-- **SKILL.md or references changes:** run the skill manually on a representative concept ("explain GRPO" or "what is a closure") and check that L1–L6 all appear, the code form matches the concept (runnable vs pseudocode), shape annotations are present in Mode B, and L6 questions follow the recall → read → design difficulty ladder.
+- **SKILL.md or references changes:** run the skill manually on a representative concept ("explain GRPO" or "what is a closure") and check that all six parts appear (intuition → test questions), the code form matches the concept (runnable vs pseudocode), shape annotations are present in Mode B, and the test questions follow the recall → read → design difficulty ladder.
 - **Adding an eval:** confirm the prompt sounds like something a real user would type (with backstory, casual tone where natural), and the `expected_output` describes the deliverable specifically enough to grade against.
 - **Packaging changes:** run `bash scripts/package-skill.sh`. Inspect with `zipinfo -1 dist/agent-teacher.zip`. The zip should contain `SKILL.md`, `README.md`, `LICENSE`, `AGENTS.md`, `CLAUDE.md`, `references/*`, `assets/examples/*`, `scripts/package-skill.sh`. It should NOT contain `.git/`, `dist/`, `evals/`, `.claude-plugin/`, `__pycache__/`, or `.DS_Store`.
 - **Adding a worked example:** run the skill on the prompt yourself, then save the full output (including sidecar code) under `assets/examples/<concept>.md`. The frozen output doubles as a regression reference.

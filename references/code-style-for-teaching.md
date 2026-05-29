@@ -124,7 +124,7 @@ def make_counter():
     return increment
 ```
 
-The `nonlocal` line is the only non-obvious one. Comment it, leave everything else clean. The walkthrough (L3) carries the rest.
+The `nonlocal` line is the only non-obvious one. Comment it, leave everything else clean. The walkthrough carries the rest.
 
 ---
 
@@ -229,11 +229,11 @@ Not OK: `a, b = b, a` *with* a comment "// XOR swap would be faster" — distrac
 
 ---
 
-## 9. The first line of code should resolve a question raised by L1
+## 9. The first line of code should resolve a question raised by the intuition
 
-L1 promises "a closure remembers variables from where it was born." The first non-trivial line of L2 should let the reader point at it and say *"oh, that's where it remembers."*
+The intuition promises "a closure remembers variables from where it was born." The first non-trivial line of the example should let the reader point at it and say *"oh, that's where it remembers."*
 
-If L1 says "futexes let userspace handle the fast path of locking" and L2 starts with `int fd = open(...)`, the reader's question is unanswered for ten lines. Restructure: open with the line where the fast path happens.
+If the intuition says "futexes let userspace handle the fast path of locking" and the example starts with `int fd = open(...)`, the reader's question is unanswered for ten lines. Restructure: open with the line where the fast path happens.
 
 ---
 
@@ -380,7 +380,7 @@ Use a trace block when:
 
 ### Format
 
-The trace block lives **right after the L2 code**, before L3 walkthrough. Comment it as `# trace on <small input>:` and list 3–6 numbered or stepwise lines showing the algorithm's state at meaningful checkpoints — not every line, just the steps that move the algorithm forward.
+The trace block lives **right after the example code**, before the walkthrough. Comment it as `# trace on <small input>:` and list 3–6 numbered or stepwise lines showing the algorithm's state at meaningful checkpoints — not every line, just the steps that move the algorithm forward.
 
 ### Good — quicksort
 
@@ -474,8 +474,8 @@ Notice what's there and what isn't:
 - Naming says the intent (`fib_memo`, `cache`, `result`).
 - The seam is shown — `fib` and `fib_memo` side by side.
 - One `# WHY` comment on the only non-obvious line (`cache[n] = result`).
-- No type hints, no `@functools.cache` (that's L5 territory).
+- No type hints, no `@functools.cache` (that's pointers territory).
 - The timing block at the bottom *proves* the lesson.
 - Output is inlined.
 
-If your draft code has this shape, you've nailed L2.
+If your draft code has this shape, you've nailed the example.

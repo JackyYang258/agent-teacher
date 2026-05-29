@@ -3,20 +3,20 @@
 > **Prompt:** "I keep seeing 'Mixture of Experts' in model papers. explain how MoE actually works — what does 'routing' mean here?"
 > **Mode:** B (pseudocode, Flavor 1 — DL architecture)
 > **Language:** English
-> **Enrichments fired:** E2 (shapes), E3 (design rationale), E4 (vs dense FFN), E5 (← FFN, → Switch / Mixtral) — 4 of 8
+> **Enrichments fired:** state tracking (shapes), design rationale, cousin matrix (vs dense FFN), prerequisites + variants (← FFN, → Switch / Mixtral) — 4 of 8
 > **Sidecar code:** [`moe-pseudocode.py`](moe-pseudocode.py)
 
-Full skill output frozen as a regression reference. Note the shape transitions `[B, T, D] → [B, T, E] → [B, T, K] → [N, D] → [B, T, D]` traced through L2 — the load-bearing part of any MoE explanation.
+Full skill output frozen as a regression reference. Note the shape transitions `[B, T, D] → [B, T, E] → [B, T, K] → [N, D] → [B, T, D]` traced through the example — the load-bearing part of any MoE explanation.
 
 ---
 
-## L1 · One-sentence intuition
+## Intuition
 
 You want a **higher-capacity** FFN layer (more parameters → more learnable) without paying for those parameters on every token at inference. MoE's answer: open E independent small FFNs (the "experts"), add a routing network (the gate), and **let each token activate only K of the E experts**.
 
 One sentence: **MoE replaces "one fat FFN" with "many small FFNs + a router," so total parameters scale up (capacity), but each token still pays only K/E of the FLOPs — big-model capacity at small-model compute.**
 
-## L2 · Structured pseudocode
+## Example — structured pseudocode
 
 ```python
 # pseudocode — illustrative, not runnable
@@ -51,7 +51,7 @@ def moe_forward(x, experts, gate, k=2):
 
 Full pseudocode also frozen at [`moe-pseudocode.py`](moe-pseudocode.py) for editor viewing.
 
-## L3 · Walkthrough
+## Walkthrough
 
 **(1) Gating — the router is the cheapest part**
 
@@ -84,7 +84,7 @@ The outer loop is **over experts**, not over tokens (this matters — if you wro
 
 **Key shape transitions**: `[B, T, D] → [N, D]` (dispatch) → expert compute → `[N, D]` → weighted accumulate → `[B, T, D]` (combine). The MoE layer takes `[B, T, D]` in and produces `[B, T, D]` out — externally it's a drop-in replacement for a dense FFN.
 
-## L4 · The trap
+## Trap
 
 **Wrong intuition:** "MoE is an ensemble of experts whose outputs are averaged."
 
@@ -98,7 +98,7 @@ out = sum(gate_weight[e] * experts[e](x) for e in range(E))
 
 The difference decides MoE's value proposition: **parameters scale ~E×, FLOPs scale only ~K×**. If it were dense ensembling, FLOPs would also scale E× — making MoE pointless, just a fatter FFN. **Sparsity is the core of MoE, not ensembling.**
 
-## L5 · Where this sits
+## Pointers — where this sits
 
 ```
 ← Prerequisites
@@ -119,7 +119,7 @@ The difference decides MoE's value proposition: **parameters scale ~E×, FLOPs s
 >
 > > Hint: parameters all live in memory, but each token only activates K experts.
 
-> **2.** Look at L2 line 21: `tokens = x[mask]`. `x` came in as `[B, T, D]`, `mask` is a bool of shape `[B, T]`. What's the output shape of `tokens`? Why did the batch and token dimensions collapse together?
+> **2.** Look at the example, line 21: `tokens = x[mask]`. `x` came in as `[B, T, D]`, `mask` is a bool of shape `[B, T]`. What's the output shape of `tokens`? Why did the batch and token dimensions collapse together?
 >
 > > Hint: bool indexing flattens all positions where the mask is True.
 

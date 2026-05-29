@@ -3,18 +3,18 @@
 > **Prompt:** "explain GRPO — I've read the paper a few times and still don't get how it differs from PPO"
 > **Mode:** B (pseudocode, Flavor 1 — DL training algorithm)
 > **Language:** English
-> **Enrichments fired:** E2 (shapes), E3 (design rationale), E4 (vs PPO), E5 (← PPO, → DPO) — 4 of 8
+> **Enrichments fired:** state tracking (shapes), design rationale, cousin matrix (vs PPO), prerequisites + variants (← PPO, → DPO) — 4 of 8
 > **Sidecar code:** [`grpo-pseudocode.py`](grpo-pseudocode.py)
 
-Full skill output frozen as a regression reference. Note the PPO comparison threaded through L2 and L4 (E4 + E3); the prerequisite-and-variant block in L5 (E5); the shape annotations on every tensor (E2).
+Full skill output frozen as a regression reference. Note the PPO comparison threaded through the example and the trap (cousin matrix + design rationale); the prerequisite-and-variant block in the pointers section; the shape annotations on every tensor.
 
 ---
 
-## L1 · One-sentence intuition
+## Intuition
 
 PPO trains a critic network `V` as a baseline to reduce variance — and that critic is expensive and hard to train. GRPO's insight: **sample multiple completions per prompt, and their mean reward is a natural baseline that you don't have to learn**. So GRPO ≈ "PPO with the critic replaced by the group's own mean."
 
-## L2 · Structured pseudocode
+## Example — structured pseudocode
 
 ```python
 # pseudocode — illustrative, not runnable
@@ -57,7 +57,7 @@ loss = pg_loss + beta * kl_penalty
 
 Full pseudocode also frozen at [`grpo-pseudocode.py`](grpo-pseudocode.py) for editor viewing.
 
-## L3 · Walkthrough
+## Walkthrough
 
 **(1) Group sampling — where the "G" comes from**
 
@@ -91,7 +91,7 @@ This block is **identical to PPO**: clipped surrogate objective and KL penalty. 
 
 Note the `A_t = A.unsqueeze(-1)` step: advantage is completion-level (`[B, G]`), but log_prob is token-level (`[B, G, T]`), so **every token of one completion shares the same advantage scalar**. This means GRPO operates at completion granularity, not token granularity — it assumes "this answer was good/bad" applies uniformly to every token of the answer.
 
-## L4 · The trap
+## Trap
 
 "GRPO is just PPO with the critic deleted" — **incomplete**. GRPO doesn't have no baseline; it swapped the baseline from "a learned V(s)" to "the group's mean reward." That swap has consequences:
 
@@ -109,7 +109,7 @@ PPO's critic gives an absolute "what is this state worth" estimate, so even when
 
 **Practical implication:** the reward model must be designed so that G samples on one prompt are **meaningfully spread**. If reward is discrete (only 0 or 1, correct/incorrect), you need larger G to ensure each group has both a hit and a miss. This is why GRPO especially needs large G in domains like math and code where rewards are easily binarized.
 
-## L5 · Where this sits
+## Pointers — where this sits
 
 ```
 ← Prerequisites
@@ -130,7 +130,7 @@ The k3 KL estimator (`exp(δ) - δ - 1`) instead of plain `log_pi - log_pi_ref` 
 >
 > > Hint: think about what PPO needs to *train* in addition to the policy.
 
-> **2.** Look at the L2 pseudocode. After `grpo_advantages(rewards)`, what is the shape of `A`? Why does the next line need `A.unsqueeze(-1)` before multiplying with `log_pi`?
+> **2.** Look at the pseudocode. After `grpo_advantages(rewards)`, what is the shape of `A`? Why does the next line need `A.unsqueeze(-1)` before multiplying with `log_pi`?
 >
 > > Hint: compare against the shape of `log_pi` and see what dimension is missing.
 

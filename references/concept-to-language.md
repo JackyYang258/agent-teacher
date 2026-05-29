@@ -1,6 +1,6 @@
 # Concept → language mapping
 
-Choose the language that makes the concept *cheapest to demonstrate*. The wrong language forces you to spend L2 explaining the language itself instead of the concept. The right language disappears.
+Choose the language that makes the concept *cheapest to demonstrate*. The wrong language forces you to spend the example explaining the language itself instead of the concept. The right language disappears.
 
 User preference always wins. If the user says "show me in Rust," use Rust even if Python would be clearer — they're learning Rust through the lens of this concept, which is its own valid goal.
 
@@ -44,7 +44,7 @@ User preference always wins. If the user says "show me in Rust," use Rust even i
 | HTTP, REST, requests | Python (`requests`) | Bash (`curl`) | — | Both clear; bash if showing protocol-level details |
 | Sockets, protocol details | Python or Go | C | — | Python shows API; C shows what's actually happening |
 | Linear algebra, vectors, matrices | Python (numpy) | — | — | Ecosystem; the notation is the lesson |
-| Neural networks, backprop, optimizers | Python (PyTorch) | Python (numpy from scratch) | — | "From scratch" for L2 of "what is backprop"; PyTorch for "what is Adam" |
+| Neural networks, backprop, optimizers | Python (PyTorch) | Python (numpy from scratch) | — | "From scratch" for the example of "what is backprop"; PyTorch for "what is Adam" |
 | **Model architectures** (Transformer block, MoE, attention variants, Mamba, RetNet) | **PyTorch pseudocode** | — | Runnable PyTorch | Use pseudocode mode (see SKILL.md). Shape annotations on every line are mandatory — the architecture *is* the shape transitions. |
 | **Training algorithms** (PPO, GRPO, DPO, RLHF, GRPO-style RL) | **PyTorch pseudocode** | — | Runnable | Use pseudocode mode. Always show the seam with the predecessor algorithm (PPO for GRPO, supervised FT for DPO). The delta *is* the lesson. |
 | **Efficient-attention / kernel concepts** (FlashAttention, Paged attention, KV cache) | **Pseudocode (Python or CUDA-flavored)** | — | Actual CUDA | Use pseudocode mode. Show the memory tiling and what's recomputed vs. cached — that's the concept, not the kernel optimization. |
@@ -56,7 +56,7 @@ User preference always wins. If the user says "show me in Rust," use Rust even i
 | **SSA / IR / optimization passes** | Pseudocode (Flavor 3) | LLVM IR text | — | Show the IR before/after each pass; the rewrite is the lesson. |
 | **Network protocols** (TCP, TLS, HTTP/2, QUIC) | **Pseudocode (Flavor 2 — sequence diagram)** | — | Real socket code | Message arrows + participant state. State diagrams for connection lifecycle. |
 | **TLS handshake / authentication flows** (OAuth, OIDC, SSO) | Pseudocode (Flavor 2) | — | — | Multi-party sequence diagram with what each party knows at each step. |
-| **Security primitives** (CSRF, JWT, hashing, signatures) | Python + sequence diagram | — | Roll-your-own crypto | Conceptual code only. Use the trap (L4) heavily — security concepts are mostly about classic mistakes. |
+| **Security primitives** (CSRF, JWT, hashing, signatures) | Python + sequence diagram | — | Roll-your-own crypto | Conceptual code only. Use the trap heavily — security concepts are mostly about classic mistakes. |
 | Regex | Python | JavaScript | — | The flavor is similar enough |
 | Parsing, ASTs | Python | TypeScript | — | Easy data structures, no ceremony |
 | Compilers, IR, codegen | — | — | — | Too broad — break into sub-concepts first |
@@ -113,4 +113,4 @@ Pick the one with **smaller setup**. A lesson in Python with `import sys` is che
 
 This file does not say "use language X for concept Y because X is better." It says: "use X because X makes the concept easier to *show*." The "better" judgment is task-specific; the "easier to show" judgment is what matters for a lesson.
 
-If you find a concept that doesn't fit cleanly into this table, default to Python and note in L1 if the concept loses something in translation. The reader is better served by a clear lesson in the wrong language than a perfect lesson they can't read.
+If you find a concept that doesn't fit cleanly into this table, default to Python and note in the intuition if the concept loses something in translation. The reader is better served by a clear lesson in the wrong language than a perfect lesson they can't read.
